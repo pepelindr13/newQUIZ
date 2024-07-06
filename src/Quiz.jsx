@@ -35,7 +35,7 @@ const Quiz = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
-    const [time, setTime] = useState(20); // 120 seconds for 2 minutes
+    const [time, setTime] = useState(300); // 120 seconds for 2 minutes
     const navigate = useNavigate();
     const userId = localStorage.getItem('currentUserId');
   
