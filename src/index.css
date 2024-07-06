@@ -1,0 +1,16 @@
+button:hover {
+background-color: aqua;
+}
+
+*{
+  font-size: 18px;
+}
+
+body {
+  background-image: url("https://images.pexels.com/photos/11587888/pexels-photo-11587888.jpeg?auto=compress&cs=tinysrgb&w=600");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  width: 100%;
+}
