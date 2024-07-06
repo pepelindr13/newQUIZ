@@ -116,7 +116,7 @@ const Quiz = () => {
             <ol type="A">
               {questions[currentQuestion].options.map((option, index) => (
                 <li key={index}>
-                  <button className='btn btn-danger w-100' onClick={() => handleAnswerOptionClick(option)}>
+                  <button className='w-100' onClick={() => handleAnswerOptionClick(option)}>
                     {option}
                   </button>
                 </li>
