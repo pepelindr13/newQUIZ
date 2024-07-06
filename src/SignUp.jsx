@@ -6,7 +6,6 @@ const SignUp = () => {
     const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
@@ -15,31 +14,11 @@ const SignUp = () => {
     return `FS${randomNum}`;
   };
 
-  const emailExists = (email) => {
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        try {
-          const user = JSON.parse(localStorage.getItem(key));
-          if (user && user.email === email) {
-            return true;
-          }
-        } catch (error) {
-          console.error(`Error parsing JSON for key ${key}:`, error);
-        }
-      }
-    }
-    return false;
-  };
 
   const validateForm = () => {
     const errors = {};
     if (!firstName) errors.firstName = 'First Name is required';
     if (!lastName) errors.lastName = 'Last Name is required';
-    if (!email) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email address is invalid';
-    }
     if (!password) {
       errors.password = 'Password is required';
     } else if (password.length < 6) {
@@ -54,17 +33,10 @@ const SignUp = () => {
       setErrors(validationErrors);
       return;
     }
-
-    if (emailExists(email)) {
-      alert('Email already exists. Please use a different email.');
-      return;
-    }
-
     const userId = generateUserId();
     const user = {
       firstName,
       lastName,
-      email,
       password,
       userId,
     };
@@ -90,13 +62,6 @@ const SignUp = () => {
         onChange={(e) => setLastName(e.target.value)}
       />
       {errors.lastName && <p className="error">{errors.lastName}</p>}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      {errors.email && <p className="error">{errors.email}</p>}
       <input
         type="password"
         placeholder="Password"
