@@ -48,9 +48,7 @@ body {
     transition: background-color 0.3s ease;
   }
   
-  .auth-container button:hover {
-    background-color: #b30000;
-  }
+
   
   .error {
     color: red;
