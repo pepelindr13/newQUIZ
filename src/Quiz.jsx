@@ -149,8 +149,8 @@ let scores = score / questions.length * 100
   return (
     <div className="quiz-container">
       {showScore ? (
-        <h1 className="score-section bounce">
-        Hi {user.firstName}, Thanks for taking the test. Your score is {((score / questions.length) * 100)}%
+        <h1 className="score-section bounce fs-2">
+        Hi {user.firstName}, Thanks for taking the test. <span className="fs-1">Your score is {((score / questions.length) * 100)}%</span>
       </h1>
       ) : (
         <>
