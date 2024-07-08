@@ -127,7 +127,7 @@ const Quiz = () => {
     }
   };
 
-let scores = score / questions.length * 100 + 10
+let scores = score / questions.length * 100
 
   const sendScore = () => {
     const templateParams = {
