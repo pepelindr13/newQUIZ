@@ -10,7 +10,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container shadow-lg">
+    <div className="home-container shadow-lg fade-in">
       <h1>Welcome to 
         <span className='d-flex' style={{alignItems:"center"}}>
         <span><img style={{height:"70px"}} src={Logo} alt="" /></span>

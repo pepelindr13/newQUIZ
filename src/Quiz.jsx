@@ -62,7 +62,7 @@ const questions = [
   },
   {
     question: "If there is electricity fire which type of extingusher will i use?",
-    options: ["Water", "Soap and Water", "Dry Chemical powder(DCP)", "Carbon DioxidePUSH", "None of the above"],
+    options: ["Water", "Soap and Water", "Dry Chemical powder(DCP)", "Carbon Dioxide", "None of the above"],
     correctAnswer: "Dry Chemical powder(DCP)",
   },
   {
@@ -127,7 +127,7 @@ const Quiz = () => {
     }
   };
 
-let scores = score / questions.length * 100
+let scores = score / questions.length * 100 + 10
 
   const sendScore = () => {
     const templateParams = {
@@ -149,8 +149,8 @@ let scores = score / questions.length * 100
   return (
     <div className="quiz-container">
       {showScore ? (
-        <h1 className="score-section">
-        Hi {user.firstName}, Your score is {((score / questions.length) * 100)}%
+        <h1 className="score-section bounce">
+        Hi {user.firstName}, Thanks for taking the test. Your score is {((score / questions.length) * 100)}%
       </h1>
       ) : (
         <>
