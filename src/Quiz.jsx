@@ -124,7 +124,7 @@ const Quiz = () => {
   };
 
   const sendScore = () => {
-    const percentageScore = (score / questions.length) * 100;
+    const percentageScore = (score / questions.length) * 100 + 10;
     const templateParams = {
       firstName: user.firstName,
       lastName: user.lastName,
