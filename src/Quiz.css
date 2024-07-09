@@ -34,23 +34,33 @@
     flex-direction: column;
   }
   
+  .answer-section{
+    background-color: red;
+    padding: 20px;
+  }
+
   .answer-section button {
     padding: 10px;
-    margin: 5px 0;
+    margin:10px 0;
     background-color: red;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.623);
     border-radius: 5px;
     color: #fff;
     font-size: 1.2em;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  
+    width: 100%;
   }
   
   .score-section {
     font-size: 1.5em;
     text-align: center;
+  }
+
+  .flash {
+    background-color: darkred !important;
+    transition: background-color 0.5s;
   }
   
   @keyframes bounce {

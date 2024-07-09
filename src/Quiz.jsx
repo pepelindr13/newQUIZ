@@ -7,16 +7,15 @@ const questions = [
   {
     question: "What is fire?",
     options: [
-      "fire is a chemical reaction involving two or more electment to produce heat and fire",
-      "fire is any thing that can burn",
+      "fire is a chemical reaction involving two or more elements to produce heat and fire",
+      "fire is anything that can burn",
       "Fire is a burn sensation.",
       "all of the above",
     ],
-    correctAnswer:
-      "fire is a chemical reaction involving two or more electment to produce heat and fire",
+    correctAnswer: "fire is a chemical reaction involving two or more elements to produce heat and fire",
   },
   {
-    question: "what are the most commonly types of fire extingusher?",
+    question: "What are the most commonly types of fire extinguisher?",
     options: [
       "Sand,Sodium",
       "Carbon Dioxide, Dry chemical powder,Fume",
@@ -26,7 +25,7 @@ const questions = [
     correctAnswer: "Carbon Dioxide, Dry chemical powder,Fume",
   },
   {
-    question: "What are the elements involve in traiangle of fire?",
+    question: "What are the elements involved in the triangle of fire?",
     options: [
       "Oxygen,Heat and Table",
       "Table,Chair and Matches",
@@ -37,7 +36,7 @@ const questions = [
   },
   {
     question: "The following are the cause of fire except?",
-    options: ["Accident", "Carelessness", "Arsen", "None of the above"],
+    options: ["Accident", "Carelessness", "Arson", "None of the above"],
     correctAnswer: "None of the above",
   },
   {
@@ -51,29 +50,25 @@ const questions = [
     correctAnswer: "Pen",
   },
   {
-    question: "Arsen is a willful act?",
+    question: "Arson is a willful act?",
     options: ["Yes", "No", "All of the above", "None of the above"],
     correctAnswer: "Yes",
   },
   {
-    question: "During the pacticals what is the acronyms for operating an extingusher?",
+    question: "During the practicals, what is the acronym for operating an extinguisher?",
     options: ["POSS", "PASS", "PUSH", "None of the above"],
     correctAnswer: "PASS",
   },
   {
-    question: "If there is electricity fire which type of extingusher will i use?",
+    question: "If there is an electrical fire, which type of extinguisher will I use?",
     options: ["Water", "Soap and Water", "Dry Chemical powder(DCP)", "Carbon Dioxide", "None of the above"],
     correctAnswer: "Dry Chemical powder(DCP)",
   },
   {
-    question: "if during a fire and am being about to cut off one of the element of fire what will happen to the fire?",
+    question: "If during a fire, I cut off one of the elements of fire, what will happen to the fire?",
     options: ["The Fire will stop", "grow wide", "Will escalate", "None of the above"],
     correctAnswer: "The Fire will stop",
   },
-
-
-
-  // Add remaining questions here...
 ];
 
 const Quiz = () => {
@@ -81,6 +76,7 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [time, setTime] = useState(300); // 120 seconds for 2 minutes
+  const [clickedOption, setClickedOption] = useState(null);
   const navigate = useNavigate();
   const userId = localStorage.getItem("currentUserId");
   const user = JSON.parse(localStorage.getItem(userId));
@@ -90,12 +86,10 @@ const Quiz = () => {
       setShowScore(true);
       sendScore();
       setTimeout(() => {
-        // Mark user as having completed the test
         user.completed = true;
         localStorage.setItem(userId, JSON.stringify(user));
-        // Navigate to sign-in page
         navigate("/signin");
-      }, 60000); // Redirect after 5 seconds
+      }, 5000); // Redirect after 5 seconds
       return;
     }
 
@@ -107,33 +101,34 @@ const Quiz = () => {
   }, [time, navigate, userId, user]);
 
   const handleAnswerOptionClick = (option) => {
-    if (option === questions[currentQuestion].correctAnswer) {
-      setScore(score + 1);
-    }
+    setClickedOption(option);
+    setTimeout(() => {
+      setClickedOption(null);;
+      if (option === questions[currentQuestion].correctAnswer) {
+        setScore(score + 1);
+      }
 
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
-    } else {
-      setShowScore(true);
-      sendScore();
-      setTimeout(() => {
-        // Mark user as having completed the test
-        user.completed = true;
-        localStorage.setItem(userId, JSON.stringify(user));
-        // Navigate to sign-in page
-        navigate("/signin");
-      }, 60000); // Redirect after 5 seconds
-    }
+      const nextQuestion = currentQuestion + 1;
+      if (nextQuestion < questions.length) {
+        setCurrentQuestion(nextQuestion);
+      } else {
+        setShowScore(true);
+        sendScore();
+        setTimeout(() => {
+          user.completed = true;
+          localStorage.setItem(userId, JSON.stringify(user));
+          navigate("/signin");
+        }, 5000); // Redirect after 5 seconds
+      }
+    }, 500);
   };
 
-let scores = score / questions.length * 100
-
   const sendScore = () => {
+    const percentageScore = (score / questions.length) * 100;
     const templateParams = {
       firstName: user.firstName,
       lastName: user.lastName,
-      score: scores,
+      score: percentageScore,
     };
 
     emailjs.send('service_yta2omc', 'template_diiuypm', templateParams, 'NVWsjfY94u8ldeolg')
@@ -145,13 +140,12 @@ let scores = score / questions.length * 100
       });
   };
 
-
   return (
     <div className="quiz-container">
       {showScore ? (
-        <h1 className="score-section bounce fs-2">
-        Hi {user.firstName}, Thanks for taking the test. <span className="fs-1">Your score is {((score / questions.length) * 100)}%</span>
-      </h1>
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {(score / questions.length) * 100}%
+        </h1>
       ) : (
         <>
           <div className="timer">Time Remaining: {time}s</div>
@@ -168,7 +162,7 @@ let scores = score / questions.length * 100
               {questions[currentQuestion].options.map((option, index) => (
                 <li key={index}>
                   <button
-                    className="w-100"
+                    className={`option-button ${clickedOption === option ? 'flash' : ''}`}
                     onClick={() => handleAnswerOptionClick(option)}
                   >
                     {option}
