@@ -4,10 +4,12 @@ import Home from "./Home";
 import Quiz from "./Quiz";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import ScrollToTop from "./ScrollToTop";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quiz" element={<Quiz />} />
