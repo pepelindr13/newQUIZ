@@ -61,7 +61,7 @@ const questions = [
   },
   {
     question: "If there is an electrical fire, which type of extinguisher will I use?",
-    options: ["Water", "Soap and Water", "Dry Chemical powder(DCP)", "Carbon Dioxide", "None of the above"],
+    options: ["Water", "Soap and Water", "Dry Chemical powder(DCP)", "Carbon Dioxide"],
     correctAnswer: "Dry Chemical powder(DCP)",
   },
   {
@@ -76,18 +76,20 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [time, setTime] = useState(300); // 120 seconds for 2 minutes
-  const [clickedOption, setClickedOption] = useState(null);
   const navigate = useNavigate();
   const userId = localStorage.getItem("currentUserId");
   const user = JSON.parse(localStorage.getItem(userId));
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     if (time === 0) {
       setShowScore(true);
       sendScore();
       setTimeout(() => {
+        // Mark user as having completed the test
         user.completed = true;
         localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
         navigate("/signin");
       }, 5000); // Redirect after 5 seconds
       return;
@@ -101,9 +103,8 @@ const Quiz = () => {
   }, [time, navigate, userId, user]);
 
   const handleAnswerOptionClick = (option) => {
-    setClickedOption(option);
+    setSelectedOption(option);
     setTimeout(() => {
-      setClickedOption(null);;
       if (option === questions[currentQuestion].correctAnswer) {
         setScore(score + 1);
       }
@@ -111,12 +112,15 @@ const Quiz = () => {
       const nextQuestion = currentQuestion + 1;
       if (nextQuestion < questions.length) {
         setCurrentQuestion(nextQuestion);
+        setSelectedOption(null);
       } else {
         setShowScore(true);
         sendScore();
         setTimeout(() => {
+          // Mark user as having completed the test
           user.completed = true;
           localStorage.setItem(userId, JSON.stringify(user));
+          // Navigate to sign-in page
           navigate("/signin");
         }, 5000); // Redirect after 5 seconds
       }
@@ -124,27 +128,27 @@ const Quiz = () => {
   };
 
   const sendScore = () => {
-    const percentageScore = (score / questions.length) * 100 + 10;
     const templateParams = {
       firstName: user.firstName,
       lastName: user.lastName,
-      score: percentageScore,
+      score: (score / questions.length) * 100 + 10,
     };
 
-    emailjs.send('service_yta2omc', 'template_diiuypm', templateParams, 'NVWsjfY94u8ldeolg')
+    emailjs
+      .send("service_yta2omc", "template_diiuypm", templateParams, "NVWsjfY94u8ldeolg")
       .then((response) => {
-        console.log('Email sent successfully!', response.status, response.text);
+        console.log("Email sent successfully!", response.status, response.text);
       })
       .catch((err) => {
-        console.error('Failed to send email. Error: ', err);
+        console.error("Failed to send email. Error: ", err);
       });
   };
 
   return (
     <div className="quiz-container">
       {showScore ? (
-        <h1 className="score-section">
-          Hi {user.firstName}, Your score is {(score / questions.length) * 100}%
+        <h1 className="score-section bounce">
+          Hi {user.firstName}, Your score is {((score / questions.length) * 100)}%
         </h1>
       ) : (
         <>
@@ -153,23 +157,21 @@ const Quiz = () => {
             <div className="question-count">
               <span>Question {currentQuestion + 1}</span>/{questions.length}
             </div>
-            <div className="question-text">
-              {questions[currentQuestion].question}
-            </div>
+            <div className="question-text">{questions[currentQuestion].question}</div>
           </div>
           <div className="answer-section">
-            <ol type="A">
+            <div>
               {questions[currentQuestion].options.map((option, index) => (
-                <li key={index}>
+                <div key={index}>
                   <button
-                    className={`option-button ${clickedOption === option ? 'flash' : ''}`}
+                    className={`option-button ${selectedOption === option ? "flash" : ""}`}
                     onClick={() => handleAnswerOptionClick(option)}
                   >
-                    {option}
+                    {String.fromCharCode(65 + index)}. {option}
                   </button>
-                </li>
+                </div>
               ))}
-            </ol>
+            </div>
           </div>
         </>
       )}
