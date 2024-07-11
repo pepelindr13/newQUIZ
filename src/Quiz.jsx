@@ -27,9 +27,9 @@ const questions = [
   {
     question: "What are the elements involved in the triangle of fire?",
     options: [
-      "Oxygen,Heat and Table",
-      "Table,Chair and Matches",
-      "Oxygen,Heat and Fuel",
+      "Oxygen, Heat and Table",
+      "Table, Chair and Matches",
+      "Oxygen ,Heat and Fuel",
       "All of the above",
     ],
     correctAnswer: "Oxygen,Heat and Fuel",
