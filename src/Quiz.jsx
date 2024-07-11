@@ -29,10 +29,10 @@ const questions = [
     options: [
       "Oxygen, Heat and Table",
       "Table, Chair and Matches",
-      "Oxygen ,Heat and Fuel",
+      "Oxygen, Heat and Fuel",
       "All of the above",
     ],
-    correctAnswer: "Oxygen,Heat and Fuel",
+    correctAnswer: "Oxygen, Heat and Fuel",
   },
   {
     question: "The following are the cause of fire except?",
