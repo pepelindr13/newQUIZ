@@ -122,7 +122,7 @@ const Quiz = () => {
           localStorage.setItem(userId, JSON.stringify(user));
           // Navigate to sign-in page
           navigate("/signin");
-        }, 5000); // Redirect after 5 seconds
+        }, 10000); // Redirect after 5 seconds
       }
     }, 500);
   };
