@@ -18,11 +18,11 @@ const questions = [
     question: "What are the most commonly types of fire extinguisher?",
     options: [
       "Sand,Sodium",
-      "Carbon Dioxide, Dry chemical powder,Fume",
+      "Carbon Dioxide, Dry chemical powder, Foam extinguisher",
       "All of the above",
       "Carbon Dioxide sodium",
     ],
-    correctAnswer: "Carbon Dioxide, Dry chemical powder,Fume",
+    correctAnswer: "Carbon Dioxide, Dry chemical powder, Foam extinguisher",
   },
   {
     question: "What are the elements involved in the triangle of fire?",
