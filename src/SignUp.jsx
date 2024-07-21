@@ -80,7 +80,7 @@ const Signup = () => {
       />
       {errors.lastName && <p className="error">{errors.lastName}</p>}
       <input
-        type="text"
+        type="number"
         placeholder="Phone Number"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
