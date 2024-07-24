@@ -1323,3 +1323,184 @@ const Quiz = () => {
 };
 
 export default Quiz;
+
+
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
+import emailjs from "emailjs-com";
+
+
+const questions = [
+  // Your questions array here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 5 minutes
+  const [userAnswer, setUserAnswer] = useState(""); // State for text input answers
+  const [flashButton, setFlashButton] = useState(null); // To keep track of the button being flashed
+  const [flashColor, setFlashColor] = useState(""); // To track the color of the flash
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
+
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        sendEmail(user.email, score); // Send email when time runs out
+        navigate("/signin");
+      }, 10000);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user, score]);
+
+  const sendEmail = (email, score) => {
+    fetch('http://localhost:3001/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, score }),
+    })
+      .then(response => response.text())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  const handleAnswerSubmit = () => {
+    if (questions[currentQuestion].correctAnswers.includes(userAnswer.trim().toLowerCase())) {
+      setScore(score + 10); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
+    } else {
+      setShowScore(true);
+      sendScore()
+      setTimeout(() => {
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        sendEmail(user.email, score); // Send email when quiz is completed
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  const handleOptionClick = (option, index) => {
+    const currentQuestionData = questions[currentQuestion];
+    const isCorrect = currentQuestionData.correctAnswers.includes(option);
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+      setFlashColor("flash-correct");
+    } else {
+      setFlashColor("flash-incorrect");
+    }
+
+    setFlashButton(index);
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        sendEmail(user.email, score); // Send email when quiz is completed
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+
+    setTimeout(() => {
+      setFlashButton(null);
+      setFlashColor("");
+    }, 500); // Match the duration of the flash animation
+  };
+
+    const sendScore = () => {
+    // const percentageScore = (score / questions.length) * 100;
+    const templateParams = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      score: score + 1,
+    };
+
+    emailjs.send('service_yta2omc', 'template_diiuypm', templateParams, 'NVWsjfY94u8ldeolg')
+      .then((response) => {
+        console.log('Email sent successfully!', response.status, response.text);
+      })
+      .catch((err) => {
+        console.error('Failed to send email. Error: ', err);
+      });
+  };
+
+  return (
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {score} out of {questions.length * 10}
+        </h1>
+      ) : (
+        <>
+          <div className="timer text-danger fw-bolder">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            {questions[currentQuestion].type === "text" ? (
+              <>
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="answer-input"
+                />
+                <div className="mt-2">
+                  <button onClick={handleAnswerSubmit} className="btn btn-danger submit-answer">
+                    Submit Answer
+                  </button>
+                </div>
+              </>
+            ) : (
+              <ol type="A">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <li key={index}>
+                    <button
+                      className={`option-button ${flashButton === index ? flashColor : ""}`}
+                      onClick={() => handleOptionClick(option, index)}
+                    >
+                      <span className="option-label">{String.fromCharCode(65 + index)}.</span> {option}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Quiz.css";
-import emailjs from "emailjs-com";
+
 
 const questions = [
   {
@@ -208,7 +208,6 @@ const Quiz = () => {
       setCurrentQuestion(nextQuestion);
     } else {
       setShowScore(true);
-      sendScore()
       setTimeout(() => {
         // Mark user as having completed the test
         user.completed = true;
@@ -223,22 +222,6 @@ const Quiz = () => {
       setFlashButton(null);
       setFlashColor(""); // Reset flash color
     }, 500); // Match the duration of the flash animation
-  };
-  const sendScore = () => {
-    // const percentageScore = (score / questions.length) * 100;
-    const templateParams = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      score: score,
-    };
-
-    emailjs.send('service_yta2omc', 'template_diiuypm', templateParams, 'NVWsjfY94u8ldeolg')
-      .then((response) => {
-        console.log('Email sent successfully!', response.status, response.text);
-      })
-      .catch((err) => {
-        console.error('Failed to send email. Error: ', err);
-      });
   };
 
   return (
