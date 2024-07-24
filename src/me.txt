@@ -1,63 +1,1325 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './Auth.css'; // Import the CSS file
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
 
-const SignIn = () => {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
+const questions = [
+  {
+    question: "What is fire?",
+    type: "text",
+    correctAnswers: ["fire is an irreversible chemical reaction", "dog"],
+  },
+  {
+    question: "What is EAP?",
+    type: "text",
+    correctAnswers: ["Emergency action plan"],
+  },
+  {
+    question: "Who is a fire Marshall?",
+    type: "text",
+    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+  },
+  {
+    question: "Name parts of a fire extinguisher you know.",
+    type: "text",
+    correctAnswers: ["fire is a chemical reaction involving two or more elements to produce heat and fire"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["fire is a chemical reaction involving two or more elements to produce heat and fire"],
+  },
+  {
+    question: "___ ____ and ____ causes fire?",
+    type: "multiple",
+    options: [
+      "Carelesness, Accident and Matches",
+      "Accident, Willful act and boys",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Carelesness, Accident and Matches"],
+  },
+  {
+    question: "___ ___ and ___ are components of fire?",
+    type: "multiple",
+    options: [
+      "Oxygen, Heat and Table",
+      "Table, Magnet and Matches",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "The following are classes of fire except?",
+    type: "multiple",
+    options: [
+      "Class A",
+      "Class B",
+      "Class M",
+      "Class C",
+    ],
+    correctAnswers: ["Class M"],
+  },
+  {
+    question: "The following are firefighting equipments one should have in a workplace except?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher",
+      "Smoke detector",
+      "Car",
+      "Maner call point(MCP)",
+    ],
+    correctAnswers: ["Maner call point(MCP)"],
+  },
+  {
+    question: "___ ___ and ___ are sources of fire?",
+    type: "multiple",
+    options: [
+      "Solid fuel, Liquid fuel, Gaseous fuel",
+      "Hard fuel, Liquid fuel, Gaseous fuel",
+      "Solid fuel, Soft fuel, Gaseous fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Solid fuel, Liquid fuel, Gaseous fuel"],
+  },
+  {
+    question: "What is the acronym for operating an extinguisher?",
+    type: "multiple",
+    options: [
+      "POSS",
+      "BOOK",
+      "PASS",
+      "COIN",
+    ],
+    correctAnswers: ["PASS"],
+  },
+  {
+    question: "What is the meaning of the word PASS?",
+    type: "text",
+    correctAnswers: ["fire is a chemical reaction involving two or more elements to produce heat and fire"],
+  },
+  {
+    question: "What are the fire fiighting equipments used during demonstration?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher, Fire blanket and Fire bucket",
+      "Gun, Blade and Matchet",
+      "Water, Bread and Sand",
+      "None of the Above",
+    ],
+    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+  },
+  {
+    question: "What are you to look out for when fighting fire?",
+    type: "multiple",
+    options: [
+      "Direction of the wind",
+      "Color of the fire",
+      "Beauty of the fire",
+      "All of the Above",
+    ],
+    correctAnswers: ["Direction of the wind"],
+  },
+  {
+    question: "What is the emergency number to call for emergencies?",
+    type: "multiple",
+    options: [
+      "09000000000",
+      "GLO",
+      "MTN",
+      "08032003557",
+    ],
+    correctAnswers: ["08032003557"],
+  },
+  // Add more questions here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 120 seconds for 2 minutes
+  const [userAnswer, setUserAnswer] = useState("");
   const navigate = useNavigate();
-  
-  const validateForm = () => {
-    const errors = {};
-    if (!userId) errors.userId = 'User ID is required';
-    if (!password) errors.password = 'Password is required';
-    return errors;
-  };
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
 
-  const handleSignIn = () => {
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem(userId));
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
 
-    if (user && user.password === password) {
-      if (user.completed) {
-        alert('You have already completed the test and cannot log in again.');
-        return;
-      }
-      localStorage.setItem('currentUserId', userId); // Store current user ID
-      navigate('/quiz');
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user]);
+
+  const handleAnswerSubmit = () => {
+    const currentCorrectAnswers = questions[currentQuestion].correctAnswers.map(answer => answer.toLowerCase());
+
+    if (currentCorrectAnswers.includes(userAnswer.trim().toLowerCase())) {
+      setScore(score + 1); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
     } else {
-      alert('Invalid User ID or Password');
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Sign In</h2>
-      <input
-        type="text"
-        placeholder="User ID"
-        value={userId}
-        onChange={(e) => setUserId(e.target.value)}
-      />
-      {errors.userId && <p className="error">{errors.userId}</p>}
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      {errors.password && <p className="error">{errors.password}</p>}
-      <button className='mb-3' onClick={handleSignIn}>Sign In</button>
-      <Link  style={{textDecoration:'none'}} to={'/signup'} className='text-center fw-bold mt-3 text-dark'>New user? <a href="/signup" className='text-decoration-none'>Sign Up</a></Link>
-      
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {(score)} out of {questions.length}.
+        </h1>
+      ) : (
+        <>
+          <div className="timer">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            <input
+              type="text"
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              className="answer-input"
+            />
+            <button onClick={handleAnswerSubmit} className="submit-answer">
+              Submit Answer
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default SignIn;
+export default Quiz;
+
+
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
+
+const questions = [
+  {
+    question: "What is fire?",
+    type: "text",
+    correctAnswers: ["fire is an irreversible chemical reaction"],
+  },
+  {
+    question: "What is EAP?",
+    type: "text",
+    correctAnswers: ["Emergency action plan"],
+  },
+  {
+    question: "Who is a fire Marshall?",
+    type: "text",
+    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+  },
+  {
+    question: "Name parts of a fire extinguisher you know.",
+    type: "text",
+    correctAnswers: ["Tamper Seal", "Cylinder", "Discharge Hose", "discharge horn", "Handle", "Valve", "Safety pin", "Safety cap", "Safety ring"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["dry chemical powder and co2", "dcp and co2", "dry chemical powder and carbon dioxide", "dcp and carbon dioxide"],
+  },
+  {
+    question: "___ ____ and ____ causes fire?",
+    type: "multiple",
+    options: [
+      "Carelesness, Accident and Matches",
+      "Accident, Willful act and boys",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "___ ___ and ___ are components of fire?",
+    type: "multiple",
+    options: [
+      "Oxygen, Heat and Table",
+      "Table, Magnet and Matches",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "The following are classes of fire except?",
+    type: "multiple",
+    options: [
+      "Class A",
+      "Class B",
+      "Class M",
+      "Class C",
+    ],
+    correctAnswers: ["Class M"],
+  },
+  {
+    question: "The following are firefighting equipments one should have in a workplace except?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher",
+      "Smoke detector",
+      "Car",
+      "Maner call point(MCP)",
+    ],
+    correctAnswers: ["Car"],
+  },
+  {
+    question: "___ ___ and ___ are sources of fire?",
+    type: "multiple",
+    options: [
+      "Solid fuel, Liquid fuel, Gaseous fuel",
+      "Hard fuel, Liquid fuel, Gaseous fuel",
+      "Solid fuel, Soft fuel, Gaseous fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Solid fuel, Liquid fuel, Gaseous fuel"],
+  },
+  {
+    question: "What is the acronym for operating an extinguisher?",
+    type: "multiple",
+    options: [
+      "POSS",
+      "BOOK",
+      "PASS",
+      "COIN",
+    ],
+    correctAnswers: ["PASS"],
+  },
+  {
+    question: "What is the meaning of the word PASS?",
+    type: "text",
+    correctAnswers: ["Pull, Aim, Squeeze, Sweep"],
+  },
+  {
+    question: "What are the fire fiighting equipments used during demonstration?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher, Fire blanket and Fire bucket",
+      "Gun, Blade and Matchet",
+      "Water, Bread and Sand",
+      "None of the Above",
+    ],
+    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+  },
+  {
+    question: "What are you to look out for when fighting fire?",
+    type: "multiple",
+    options: [
+      "Direction of the wind",
+      "Color of the fire",
+      "Beauty of the fire",
+      "All of the Above",
+    ],
+    correctAnswers: ["Direction of the wind"],
+  },
+  {
+    question: "What is the emergency number to call for emergencies?",
+    type: "multiple",
+    options: [
+      "09000000000",
+      "GLO",
+      "MTN",
+      "08032003557",
+    ],
+    correctAnswers: ["08032003557"],
+  },
+  // Add more questions here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 5 minutes
+  const [userAnswer, setUserAnswer] = useState("");
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
+
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user]);
+
+  const handleAnswerSubmit = () => {
+    const currentQuestionData = questions[currentQuestion];
+    let isCorrect = false;
+
+    if (currentQuestionData.type === "text") {
+      isCorrect = currentQuestionData.correctAnswers.includes(userAnswer.trim());
+    }
+
+    if (isCorrect) {
+      setScore(score + 1); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  const handleOptionClick = (option) => {
+    const currentQuestionData = questions[currentQuestion];
+    const isCorrect = currentQuestionData.correctAnswers.includes(option);
+
+    if (isCorrect) {
+      setScore(score); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  return (
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {score} out of {questions.length}
+        </h1>
+      ) : (
+        <>
+          <div className="timer">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            {questions[currentQuestion].type === "text" ? (
+              <>
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="answer-input"
+                />
+                <button onClick={handleAnswerSubmit} className="submit-answer">
+                  Submit Answer
+                </button>
+              </>
+            ) : (
+              <ol type="A">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <li key={index}>
+                    <button
+                      className={`option-button`}
+                      onClick={() => handleOptionClick(option)}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Quiz;
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
+
+const questions = [
+  {
+    question: "What is fire?",
+    type: "text",
+    correctAnswers: ["fire is an irreversible chemical reaction"],
+  },
+  {
+    question: "What is EAP?",
+    type: "text",
+    correctAnswers: ["Emergency action plan"],
+  },
+  {
+    question: "Who is a fire Marshall?",
+    type: "text",
+    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+  },
+  {
+    question: "Name parts of a fire extinguisher you know.",
+    type: "text",
+    correctAnswers: ["Tamper Seal", "Cylinder", "Discharge Hose", "discharge horn", "Handle", "Valve", "Safety pin", "Safety cap", "Safety ring"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["dry chemical powder and co2", "dcp and co2", "dry chemical powder and carbon dioxide", "dcp and carbon dioxide"],
+  },
+  {
+    question: "___ ____ and ____ causes fire?",
+    type: "multiple",
+    options: [
+      "Carelesness, Accident and Matches",
+      "Accident, Willful act and boys",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Carelesness, Accident and Matches"],
+  },
+  {
+    question: "___ ___ and ___ are components of fire?",
+    type: "multiple",
+    options: [
+      "Oxygen, Heat and Table",
+      "Table, Magnet and Matches",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "The following are classes of fire except?",
+    type: "multiple",
+    options: [
+      "Class A",
+      "Class B",
+      "Class M",
+      "Class C",
+    ],
+    correctAnswers: ["Class M"],
+  },
+  {
+    question: "The following are firefighting equipments one should have in a workplace except?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher",
+      "Smoke detector",
+      "Car",
+      "Maner call point(MCP)",
+    ],
+    correctAnswers: ["Car"],
+  },
+  {
+    question: "___ ___ and ___ are sources of fire?",
+    type: "multiple",
+    options: [
+      "Solid fuel, Liquid fuel, Gaseous fuel",
+      "Hard fuel, Liquid fuel, Gaseous fuel",
+      "Solid fuel, Soft fuel, Gaseous fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Solid fuel, Liquid fuel, Gaseous fuel"],
+  },
+  {
+    question: "What is the acronym for operating an extinguisher?",
+    type: "multiple",
+    options: [
+      "POSS",
+      "BOOK",
+      "PASS",
+      "COIN",
+    ],
+    correctAnswers: ["PASS"],
+  },
+  {
+    question: "What is the meaning of the word PASS?",
+    type: "text",
+    correctAnswers: ["Pull, Aim, Squeeze, Sweep"],
+  },
+  {
+    question: "What are the fire fiighting equipments used during demonstration?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher, Fire blanket and Fire bucket",
+      "Gun, Blade and Matchet",
+      "Water, Bread and Sand",
+      "None of the Above",
+    ],
+    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+  },
+  {
+    question: "What are you to look out for when fighting fire?",
+    type: "multiple",
+    options: [
+      "Direction of the wind",
+      "Color of the fire",
+      "Beauty of the fire",
+      "All of the Above",
+    ],
+    correctAnswers: ["Direction of the wind"],
+  },
+  {
+    question: "What is the emergency number to call for emergencies?",
+    type: "multiple",
+    options: [
+      "09000000000",
+      "GLO",
+      "MTN",
+      "08032003557",
+    ],
+    correctAnswers: ["08032003557"],
+  },
+  // Add more questions here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 5 minutes
+  const [userAnswer, setUserAnswer] = useState("");
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
+
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user]);
+
+  const handleAnswerSubmit = () => {
+    const currentQuestionData = questions[currentQuestion];
+    let isCorrect = false;
+
+    if (currentQuestionData.type === "text") {
+      isCorrect = currentQuestionData.correctAnswers.includes(userAnswer.trim());
+    }
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  const handleOptionClick = (option) => {
+    const currentQuestionData = questions[currentQuestion];
+    const isCorrect = currentQuestionData.correctAnswers.includes(option);
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  return (
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {score} out of {questions.length * 10}
+        </h1>
+      ) : (
+        <>
+          <div className="timer">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            {questions[currentQuestion].type === "text" ? (
+              <>
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="answer-input"
+                />
+                <button onClick={handleAnswerSubmit} className="submit-answer">
+                  Submit Answer
+                </button>
+              </>
+            ) : (
+              <ol type="A">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <li key={index}>
+                    <button
+                      className={`option-button`}
+                      onClick={() => handleOptionClick(option)}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Quiz;
+
+
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
+
+const questions = [
+  {
+    question: "What is fire?",
+    type: "text",
+    correctAnswers: ["fire is an irreversible chemical reaction"],
+  },
+  {
+    question: "What is EAP?",
+    type: "text",
+    correctAnswers: ["Emergency action plan"],
+  },
+  {
+    question: "Who is a fire Marshall?",
+    type: "text",
+    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+  },
+  {
+    question: "Name parts of a fire extinguisher you know.",
+    type: "text",
+    correctAnswers: ["Tamper Seal", "Cylinder", "Discharge Hose", "discharge horn", "Handle", "Valve", "Safety pin", "Safety cap", "Safety ring"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["dry chemical powder and co2", "dcp and co2", "dry chemical powder and carbon dioxide", "dcp and carbon dioxide"],
+  },
+  {
+    question: "___ ____ and ____ causes fire?",
+    type: "multiple",
+    options: [
+      "Carelesness, Accident and Matches",
+      "Accident, Willful act and boys",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Carelesness, Accident and Matches"],
+  },
+  {
+    question: "___ ___ and ___ are components of fire?",
+    type: "multiple",
+    options: [
+      "Oxygen, Heat and Table",
+      "Table, Magnet and Matches",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "The following are classes of fire except?",
+    type: "multiple",
+    options: [
+      "Class A",
+      "Class B",
+      "Class M",
+      "Class C",
+    ],
+    correctAnswers: ["Class M"],
+  },
+  {
+    question: "The following are firefighting equipments one should have in a workplace except?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher",
+      "Smoke detector",
+      "Car",
+      "Maner call point(MCP)",
+    ],
+    correctAnswers: ["Car"],
+  },
+  {
+    question: "___ ___ and ___ are sources of fire?",
+    type: "multiple",
+    options: [
+      "Solid fuel, Liquid fuel, Gaseous fuel",
+      "Hard fuel, Liquid fuel, Gaseous fuel",
+      "Solid fuel, Soft fuel, Gaseous fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Solid fuel, Liquid fuel, Gaseous fuel"],
+  },
+  {
+    question: "What is the acronym for operating an extinguisher?",
+    type: "multiple",
+    options: [
+      "POSS",
+      "BOOK",
+      "PASS",
+      "COIN",
+    ],
+    correctAnswers: ["PASS"],
+  },
+  {
+    question: "What is the meaning of the word PASS?",
+    type: "text",
+    correctAnswers: ["Pull, Aim, Squeeze, Sweep"],
+  },
+  {
+    question: "What are the fire fiighting equipments used during demonstration?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher, Fire blanket and Fire bucket",
+      "Gun, Blade and Matchet",
+      "Water, Bread and Sand",
+      "None of the Above",
+    ],
+    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+  },
+  {
+    question: "What are you to look out for when fighting fire?",
+    type: "multiple",
+    options: [
+      "Direction of the wind",
+      "Color of the fire",
+      "Beauty of the fire",
+      "All of the Above",
+    ],
+    correctAnswers: ["Direction of the wind"],
+  },
+  {
+    question: "What is the emergency number to call for emergencies?",
+    type: "multiple",
+    options: [
+      "09000000000",
+      "GLO",
+      "MTN",
+      "08032003557",
+    ],
+    correctAnswers: ["08032003557"],
+  },
+  // Add more questions here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 5 minutes
+  const [userAnswer, setUserAnswer] = useState("");
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
+
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user]);
+
+  const handleAnswerSubmit = () => {
+    const currentQuestionData = questions[currentQuestion];
+    let isCorrect = false;
+
+    if (currentQuestionData.type === "text") {
+      isCorrect = currentQuestionData.correctAnswers.some(answer =>
+        answer.toLowerCase() === userAnswer.trim().toLowerCase()
+      );
+    }
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  const handleOptionClick = (option) => {
+    const currentQuestionData = questions[currentQuestion];
+    const isCorrect = currentQuestionData.correctAnswers.includes(option);
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  return (
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {score} out of {questions.length * 10}
+        </h1>
+      ) : (
+        <>
+          <div className="timer">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            {questions[currentQuestion].type === "text" ? (
+              <>
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="answer-input"
+                />
+                <button onClick={handleAnswerSubmit} className="submit-answer btn btn-danger btn-sm mt-2">
+                  Submit Answer
+                </button>
+              </>
+            ) : (
+              <ol type="A" >
+                {questions[currentQuestion].options.map((option, index) => (
+                  <li key={index} className="bg-success my-3">
+                    <button
+                      className="option-button"
+                      onClick={() => handleOptionClick(option)}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Quiz;
+
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
+
+const questions = [
+  {
+    question: "What is fire?",
+    type: "text",
+    correctAnswers: ["fire is an irreversible chemical reaction"],
+  },
+  {
+    question: "What is EAP?",
+    type: "text",
+    correctAnswers: ["Emergency action plan"],
+  },
+  {
+    question: "Who is a fire Marshall?",
+    type: "text",
+    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+  },
+  {
+    question: "Name parts of a fire extinguisher you know.",
+    type: "text",
+    correctAnswers: ["Tamper Seal", "Cylinder", "Discharge Hose", "discharge horn", "Handle", "Valve", "Safety pin", "Safety cap", "Safety ring"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["dry chemical powder and co2", "dcp and co2", "dry chemical powder and carbon dioxide", "dcp and carbon dioxide"],
+  },
+  {
+    question: "___ ____ and ____ causes fire?",
+    type: "multiple",
+    options: [
+      "Carelesness, Accident and Matches",
+      "Accident, Willful act and boys",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Carelesness, Accident and Matches"],
+  },
+  {
+    question: "___ ___ and ___ are components of fire?",
+    type: "multiple",
+    options: [
+      "Oxygen, Heat and Table",
+      "Table, Magnet and Matches",
+      "Oxygen, Heat and Fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Oxygen, Heat and Fuel"],
+  },
+  {
+    question: "The following are classes of fire except?",
+    type: "multiple",
+    options: [
+      "Class A",
+      "Class B",
+      "Class M",
+      "Class C",
+    ],
+    correctAnswers: ["Class M"],
+  },
+  {
+    question: "The following are firefighting equipments one should have in a workplace except?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher",
+      "Smoke detector",
+      "Car",
+      "Maner call point(MCP)",
+    ],
+    correctAnswers: ["Car"],
+  },
+  {
+    question: "___ ___ and ___ are sources of fire?",
+    type: "multiple",
+    options: [
+      "Solid fuel, Liquid fuel, Gaseous fuel",
+      "Hard fuel, Liquid fuel, Gaseous fuel",
+      "Solid fuel, Soft fuel, Gaseous fuel",
+      "All of the above",
+    ],
+    correctAnswers: ["Solid fuel, Liquid fuel, Gaseous fuel"],
+  },
+  {
+    question: "What is the acronym for operating an extinguisher?",
+    type: "multiple",
+    options: [
+      "POSS",
+      "BOOK",
+      "PASS",
+      "COIN",
+    ],
+    correctAnswers: ["PASS"],
+  },
+  {
+    question: "What is the meaning of the word PASS?",
+    type: "text",
+    correctAnswers: ["Pull, Aim, Squeeze, Sweep"],
+  },
+  {
+    question: "What are the fire fiighting equipments used during demonstration?",
+    type: "multiple",
+    options: [
+      "Fire extinguisher, Fire blanket and Fire bucket",
+      "Gun, Blade and Matchet",
+      "Water, Bread and Sand",
+      "None of the Above",
+    ],
+    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+  },
+  {
+    question: "What are you to look out for when fighting fire?",
+    type: "multiple",
+    options: [
+      "Direction of the wind",
+      "Color of the fire",
+      "Beauty of the fire",
+      "All of the Above",
+    ],
+    correctAnswers: ["Direction of the wind"],
+  },
+  {
+    question: "What is the emergency number to call for emergencies?",
+    type: "multiple",
+    options: [
+      "09000000000",
+      "GLO",
+      "MTN",
+      "08032003557",
+    ],
+    correctAnswers: ["08032003557"],
+  },
+  // Add more questions here...
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [time, setTime] = useState(300); // 5 minutes
+  const [userAnswer, setUserAnswer] = useState(""); // State for text input answers
+  const [flashButton, setFlashButton] = useState(null); // To keep track of the button being flashed
+  const [flashColor, setFlashColor] = useState(""); // To track the color of the flash
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("currentUserId");
+  const user = JSON.parse(localStorage.getItem(userId));
+
+  useEffect(() => {
+    if (time === 0) {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 10000); // Redirect after 5 seconds
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time, navigate, userId, user]);
+
+  const handleAnswerSubmit = () => {
+    if (questions[currentQuestion].correctAnswers.includes(userAnswer.trim().toLowerCase())) {
+      setScore(score + 1); // 10 marks per question
+    }
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+      setUserAnswer(""); // Reset the input field
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+  };
+
+  const handleOptionClick = (option, index) => {
+    const currentQuestionData = questions[currentQuestion];
+    const isCorrect = currentQuestionData.correctAnswers.includes(option);
+
+    if (isCorrect) {
+      setScore(score + 10); // 10 marks per question
+      setFlashColor("flash-correct");
+    } else {
+      setFlashColor("flash-incorrect");
+    }
+
+    // Flash the button by setting its index and color
+    setFlashButton(index);
+
+    const nextQuestion = currentQuestion + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestion(nextQuestion);
+    } else {
+      setShowScore(true);
+      setTimeout(() => {
+        // Mark user as having completed the test
+        user.completed = true;
+        localStorage.setItem(userId, JSON.stringify(user));
+        // Navigate to sign-in page
+        navigate("/signin");
+      }, 5000); // Redirect after 5 seconds
+    }
+
+    // Reset flash after animation
+    setTimeout(() => {
+      setFlashButton(null);
+      setFlashColor(""); // Reset flash color
+    }, 500); // Match the duration of the flash animation
+  };
+
+  return (
+    <div className="quiz-container">
+      {showScore ? (
+        <h1 className="score-section">
+          Hi {user.firstName}, Your score is {score} out of {questions.length * 10}
+        </h1>
+      ) : (
+        <>
+          <div className="timer text-danger fw-bolder">Time Remaining: {time}s</div>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {currentQuestion + 1}</span>/{questions.length}
+            </div>
+            <div className="question-text">
+              {questions[currentQuestion].question}
+            </div>
+          </div>
+          <div className="answer-section">
+            {questions[currentQuestion].type === "text" ? (
+              <>
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="answer-input"
+                />
+                <div className="mt-2">
+                <button onClick={handleAnswerSubmit} className="btn btn-danger submit-answer">
+                  Submit Answer
+                </button>
+                </div>
+              </>
+            ) : (
+              <ol type="A">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <li key={index}>
+                    <button
+                      className={`option-button ${flashButton === index ? flashColor : ""}`}
+                      onClick={() => handleOptionClick(option, index)}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Quiz;
