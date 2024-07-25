@@ -16,9 +16,9 @@ const questions = [
     correctAnswers: ["Fire is an irreversable chemical reaction between fuel & oxygen in the presence of heat"],
   },
   {
-    question: "What does a fire extinguisher contain?",
+    question: "What is EAP?",
     type: "text",
-    correctAnswers: ["Powder"],
+    correctAnswers: ["Emergency action plan"],
   },
   {
     question: "Who is a fire Marshall?",
@@ -51,7 +51,7 @@ const questions = [
       "All of the above",
       "None of the above",
     ],
-    correctAnswers: ["Pull the pin, Aim at the pass, squeeze the level, spread side by side"],
+    correctAnswers: ["Pull the pin, Aim at the base of fire, squeeze the level, spread side by side"],
   },
   {
     question: "During electrical fire which of this is suitable for the fire?",
