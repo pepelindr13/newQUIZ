@@ -1,16 +1,19 @@
+/* Quiz.css */
 .quiz-container {
-  max-width: 600px;
-  color: white;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  height: 100vh;
+  color: #fff;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
 .timer {
-  font-size: 1.2rem;
+  font-size: 1.2em;
+  font-weight: 800;
   margin-bottom: 20px;
+  color: red;
 }
 
 .question-section {
@@ -18,43 +21,44 @@
 }
 
 .question-count {
-  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.2em;
 }
 
 .question-text {
-  margin: 10px 0;
+  font-size: 1.5em;
 }
 
 .answer-section {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-.answer-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
 
-.submit-answer {
-  display: block;
-  width: 100%;
+
+.answer-section button {
   padding: 10px;
-  background-color: #dc3545;
-  color: #fff;
+  margin: 5px 0;
+  background-color: red;
   border: none;
   border-radius: 5px;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.submit-answer:hover {
-  background-color: #c82333;
+
+.score-section {
+  font-size: 1.5em;
+  text-align: center;
 }
 
-ol {
-  padding-left: 0;
+li, ol {
+  list-style: none;
 }
+
 
 .option-button {
   display: flex;
@@ -100,14 +104,4 @@ ol {
   100% {
     background-color: #dc3545;
   }
-}
-
-.score-section {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-}
-
-li {
-  list-style: none;
 }

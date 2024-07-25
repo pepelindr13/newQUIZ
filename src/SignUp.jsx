@@ -1,65 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css'; // Import the CSS file
 
-const Signup = () => {
+const SignUp = () => {
+    const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
+
+  const generateUserId = () => {
+    const randomNum = Math.floor(100 + Math.random() * 900);
+    return `FS${randomNum}`;
+  };
+
+  const emailExists = (email) => {
+    for (let key in localStorage) {
+      if (localStorage.hasOwnProperty(key)) {
+        try {
+          const user = JSON.parse(localStorage.getItem(key));
+          if (user && user.email === email) {
+            return true;
+          }
+        } catch (error) {
+          console.error(`Error parsing JSON for key ${key}:`, error);
+        }
+      }
+    }
+    return false;
+  };
 
   const validateForm = () => {
     const errors = {};
-    if (!firstName) errors.firstName = 'First name is required';
-    if (!lastName) errors.lastName = 'Last name is required';
-    if (!phoneNumber) errors.phoneNumber = 'Phone number is required';
-    if (!password) errors.password = 'Password is required';
-
-    // Phone number validation
-    const phoneRegex = /^(081|080|090|070)\d{8}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      errors.phoneNumber = 'Phone number must be 11 digits and start with 081, 080, 090, or 070';
+    if (!firstName) errors.firstName = 'First Name is required';
+    if (!lastName) errors.lastName = 'Last Name is required';
+    if (!email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email address is invalid';
     }
-
-    // Password validation
-    if (password.length < 6) {
-      errors.password = 'Password must be at least six characters long';
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
     }
-
     return errors;
   };
 
-  const handleSignup = () => {
+  const handleSignUp = () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Check for existing phone number
-    const allUsers = Object.keys(localStorage).map((key) => {
-      try {
-        return JSON.parse(localStorage.getItem(key));
-      } catch (e) {
-        return null;
-      }
-    }).filter(user => user !== null);
-
-    const phoneExists = allUsers.some(user => user.phoneNumber === phoneNumber);
-    if (phoneExists) {
-      alert('This phone number is already registered');
+    if (emailExists(email)) {
+      alert('Email already exists. Please use a different email.');
       return;
     }
 
-    const userId = `FS${Math.floor(Math.random() * 900) + 100}`;
-    const user = { firstName, lastName, phoneNumber, password, userId, completed: false };
-
+    const userId = generateUserId();
+    const user = {
+      firstName,
+      lastName,
+      email,
+      password,
+      userId,
+    };
     localStorage.setItem(userId, JSON.stringify(user));
-
-    alert(`Signup successful! Your User ID is: ${userId}`);
-    navigate('/signin');
+    alert(`Sign up successful! Your User ID is: ${userId} it is important! to write down your USER ID`);
+    navigate('/SignIn');
   };
 
   return (
@@ -80,12 +91,12 @@ const Signup = () => {
       />
       {errors.lastName && <p className="error">{errors.lastName}</p>}
       <input
-        type="number"
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
-      {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
+      {errors.email && <p className="error">{errors.email}</p>}
       <input
         type="password"
         placeholder="Password"
@@ -93,9 +104,9 @@ const Signup = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       {errors.password && <p className="error">{errors.password}</p>}
-      <button onClick={handleSignup}>Sign Up</button>
+      <button onClick={handleSignUp}>Sign Up</button>
     </div>
   );
 };
 
-export default Signup;
+export default SignUp;
