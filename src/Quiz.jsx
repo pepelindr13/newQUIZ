@@ -76,7 +76,7 @@ const questions = [
     correctAnswers: ["The fire stops"],
   },
   {
-    question: "The word SIT in fire terms means what?",
+    question: "The word 'sit of the fire' means what?",
     type: "multiple",
     options: [
       "Where the fire starts",
@@ -92,12 +92,12 @@ const questions = [
     correctAnswers: ["dry chemical powder & co2", "dcp & co2", "dry chemical powder & carbon dioxide", "dcp & carbon dioxide"],
   },
   {
-    question: "___ ____ & ____ causes fire?",
+    question: "___ ____ & ____ are causes fire?",
     type: "multiple",
     options: [
       "Carelesness, Accident & Matches",
       "Accident, Willful act & boys",
-      "Oxygen, Heat & Fuel",
+      "Carelesness, Accident & Arson",
       "All of the above",
     ],
     correctAnswers: ["Carelesness, Accident & Matches"],
@@ -106,10 +106,11 @@ const questions = [
     question: "___ ___ & ___ are components of fire?",
     type: "multiple",
     options: [
-      "Oxygen, Heat & Table",
+      "Fuel, oxygen and box",
+      "Fuel, oxygen & Heat",
       "Table, Magnet & Matches",
       "Oxygen, Heat & Fuel",
-      "All of the above",
+      "Fuel, oxygen & Heat",
     ],
     correctAnswers: ["Oxygen, Heat & Fuel"],
   },
@@ -326,7 +327,7 @@ const Quiz = () => {
     <div className="quiz-container">
       {showScore ? (
         <h1 className="score-section text-light">
-         You scored ({scorePercentage}%)
+         Congratulations {user.firstName} You scored ({scorePercentage}%)
         </h1>
       ) : (
         <>
