@@ -6,7 +6,7 @@ const SignUp = () => {
     const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phone, setphone] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
@@ -15,12 +15,12 @@ const SignUp = () => {
     return `FS${randomNum}`;
   };
 
-  const emailExists = (email) => {
+  const phoneExists = (phone) => {
     for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
         try {
           const user = JSON.parse(localStorage.getItem(key));
-          if (user && user.email === email) {
+          if (user && user.phone === phone) {
             return true;
           }
         } catch (error) {
@@ -35,10 +35,8 @@ const SignUp = () => {
     const errors = {};
     if (!firstName) errors.firstName = 'First Name is required';
     if (!lastName) errors.lastName = 'Last Name is required';
-    if (!email) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email address is invalid';
+    if (!phone) {
+      errors.phone = 'phone is required';
     }
     if (!password) {
       errors.password = 'Password is required';
@@ -55,8 +53,8 @@ const SignUp = () => {
       return;
     }
 
-    if (emailExists(email)) {
-      alert('Email already exists. Please use a different email.');
+    if (phoneExists(phone)) {
+      alert('phone already exists. Please use a different phone.');
       return;
     }
 
@@ -64,7 +62,7 @@ const SignUp = () => {
     const user = {
       firstName,
       lastName,
-      email,
+      phone,
       password,
       userId,
     };
@@ -91,12 +89,12 @@ const SignUp = () => {
       />
       {errors.lastName && <p className="error">{errors.lastName}</p>}
       <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="number"
+        placeholder="phone"
+        value={phone}
+        onChange={(e) => setphone(e.target.value)}
       />
-      {errors.email && <p className="error">{errors.email}</p>}
+      {errors.phone && <p className="error">{errors.phone}</p>}
       <input
         type="password"
         placeholder="Password"

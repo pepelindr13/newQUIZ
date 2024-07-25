@@ -6,50 +6,117 @@ import emailjs from "emailjs-com";
 const questions = [
   {
     question: "What is fire?",
-    type: "text",
-    correctAnswers: ["fire is an irreversible chemical reaction"],
+    type: "multiple",
+    options: [
+      "Fire is an irreversable chemical reaction between fuel & oxygen in the presence of heat",
+      "Fire is an irreversable chemical reaction in the presence of gold, heat & fuel.",
+      "Fire is anything that can burn",
+      "All of the above",
+    ],
+    correctAnswers: ["Fire is an irreversable chemical reaction between fuel & oxygen in the presence of heat"],
   },
   {
-    question: "What is EAP?",
+    question: "What does a fire extinguisher contain?",
     type: "text",
-    correctAnswers: ["Emergency action plan"],
+    correctAnswers: ["Powder"],
   },
   {
     question: "Who is a fire Marshall?",
-    type: "text",
-    correctAnswers: ["A fire marshall is a person who is responsible for safeguarding the employees"],
+    type: "multiple",
+    options: [
+      "The person who is in charge",
+      "The person who is responsible to safeguard the safety of the employees",
+      "A person that heads a company",
+      "None of the above",
+    ],
+    correctAnswers: ["The person who is responsible to safeguard the safety of the employees"],
   },
   {
-    question: "Name parts of a fire extinguisher you know.",
-    type: "text",
-    correctAnswers: ["Tamper Seal", "Cylinder", "Discharge Hose", "discharge horn", "Handle", "Valve", "Safety pin", "Safety cap", "Safety ring"],
+    question: "The following are part of an extinguisher except one?",
+    type: "multiple",
+    options: [
+      "Safety pin, tamper seal, body plate, cylinder, discharge hose",
+      "pick, iron, seal, pipe, coast",
+      "pin, tamper seal, plate, corn",
+      "None of the above",
+    ],
+    correctAnswers: ["Safety pin, tamper seal, body plate, cylinder, discharge hose"],
+  },
+  {
+    question: "What is the full meaning of the word PASS?",
+    type: "multiple",
+    options: [
+      "Pull, insert, inject, press",
+      "Pull the pin, Aim at the pass, squeeze the level, spread side by side",
+      "All of the above",
+      "None of the above",
+    ],
+    correctAnswers: ["Pull the pin, Aim at the pass, squeeze the level, spread side by side"],
+  },
+  {
+    question: "During electrical fire which of this is suitable for the fire?",
+    type: "multiple",
+    options: [
+      "Carbon dioxide",
+      "Dry chemical powder(DCP)",
+      "Water extinguisher",
+      "All of the above",
+    ],
+    correctAnswers: ["Dry chemical powder(DCP)"],
+  },
+  {
+    question: "During fire if one component or element is cut off what happens to the fire?",
+    type: "multiple",
+    options: [
+      "The fire becomes much",
+      "The fire stops",
+      "The fire spreads",
+      "All of the above",
+    ],
+    correctAnswers: ["The fire stops"],
+  },
+  {
+    question: "The word SIT in fire terms means what?",
+    type: "multiple",
+    options: [
+      "Where the fire starts",
+      "Where the fire is sitting",
+      "The original fire",
+      "None of the above",
+    ],
+    correctAnswers: ["Where the fire starts"],
   },
   {
     question: "What are the two commonly used type of extinguisher?",
     type: "text",
-    correctAnswers: ["dry chemical powder and co2", "dcp and co2", "dry chemical powder and carbon dioxide", "dcp and carbon dioxide"],
+    correctAnswers: ["dry chemical powder & co2", "dcp & co2", "dry chemical powder & carbon dioxide", "dcp & carbon dioxide"],
   },
   {
-    question: "___ ____ and ____ causes fire?",
+    question: "___ ____ & ____ causes fire?",
     type: "multiple",
     options: [
-      "Carelesness, Accident and Matches",
-      "Accident, Willful act and boys",
-      "Oxygen, Heat and Fuel",
+      "Carelesness, Accident & Matches",
+      "Accident, Willful act & boys",
+      "Oxygen, Heat & Fuel",
       "All of the above",
     ],
-    correctAnswers: ["Carelesness, Accident and Matches"],
+    correctAnswers: ["Carelesness, Accident & Matches"],
   },
   {
-    question: "___ ___ and ___ are components of fire?",
+    question: "___ ___ & ___ are components of fire?",
     type: "multiple",
     options: [
-      "Oxygen, Heat and Table",
-      "Table, Magnet and Matches",
-      "Oxygen, Heat and Fuel",
+      "Oxygen, Heat & Table",
+      "Table, Magnet & Matches",
+      "Oxygen, Heat & Fuel",
       "All of the above",
     ],
-    correctAnswers: ["Oxygen, Heat and Fuel"],
+    correctAnswers: ["Oxygen, Heat & Fuel"],
+  },
+  {
+    question: "What are the two commonly used type of extinguisher?",
+    type: "text",
+    correctAnswers: ["dry chemical powder & co2", "dcp & co2", "dry chemical powder & carbon dioxide", "dcp & carbon dioxide"],
   },
   {
     question: "The following are classes of fire except?",
@@ -74,7 +141,7 @@ const questions = [
     correctAnswers: ["Car"],
   },
   {
-    question: "___ ___ and ___ are sources of fire?",
+    question: "___ ___ & ___ are sources of fire?",
     type: "multiple",
     options: [
       "Solid fuel, Liquid fuel, Gaseous fuel",
@@ -96,20 +163,15 @@ const questions = [
     correctAnswers: ["PASS"],
   },
   {
-    question: "What is the meaning of the word PASS?",
-    type: "text",
-    correctAnswers: ["Pull, Aim, Squeeze, Sweep"],
-  },
-  {
     question: "What are the fire fiighting equipments used during demonstration?",
     type: "multiple",
     options: [
-      "Fire extinguisher, Fire blanket and Fire bucket",
-      "Gun, Blade and Matchet",
-      "Water, Bread and Sand",
+      "Fire extinguisher, Fire blanket & Fire bucket",
+      "Gun, Blade & Matchet",
+      "Water, Bread & Sand",
       "None of the Above",
     ],
-    correctAnswers: ["Fire extinguisher, Fire blanket and Fire bucket"],
+    correctAnswers: ["Fire extinguisher, Fire blanket & Fire bucket"],
   },
   {
     question: "What are you to look out for when fighting fire?",
@@ -132,6 +194,17 @@ const questions = [
       "08032003557",
     ],
     correctAnswers: ["08032003557"],
+  },
+  {
+    question: "Was this training educative?",
+    type: "multiple",
+    options: [
+      "Yes",
+      "No",
+      "All of the above",
+      "None of the avove",
+    ],
+    correctAnswers: ["Yes"],
   },
   // Add more questions here...
 ];
@@ -157,7 +230,7 @@ const Quiz = () => {
         localStorage.setItem(userId, JSON.stringify(user));
         // Navigate to sign-in page
         navigate("/signin");
-      }, 10000); // Redirect after 5 seconds
+      }, 100000); // Redirect after 5 seconds
       return;
     }
 
@@ -186,15 +259,17 @@ const Quiz = () => {
         localStorage.setItem(userId, JSON.stringify(user));
         // Navigate to sign-in page
         navigate("/signin");
-      }, 10000); // Redirect after 5 seconds
+      }, 100000); // Redirect after 5 seconds
     }
   };
+
+  
 
   const sendScore = () => {
     const templateParams = {
       firstName: user.firstName,
       lastName: user.lastName,
-      score: (score),
+      score: scorePercentage,
     };
     emailjs
       .send("service_yta2omc", "template_diiuypm", templateParams, "NVWsjfY94u8ldeolg")
@@ -206,12 +281,15 @@ const Quiz = () => {
       });
   };
 
+  const totalMarks = questions.length * 5;
+  const scorePercentage = (score / totalMarks) * 100;
+
   const handleOptionClick = (option, index) => {
     const currentQuestionData = questions[currentQuestion];
     const isCorrect = currentQuestionData.correctAnswers.includes(option);
 
     if (isCorrect) {
-      setScore(score + 1); // 10 marks per question
+      setScore(score + 5); // 5 marks per question
       setFlashColor("flash-correct");
     } else {
       setFlashColor("flash-incorrect");
@@ -248,7 +326,7 @@ const Quiz = () => {
     <div className="quiz-container">
       {showScore ? (
         <h1 className="score-section text-light">
-          Hi {user.firstName}, Your score is {score} out of {questions.length}
+         You scored ({scorePercentage}%)
         </h1>
       ) : (
         <>
