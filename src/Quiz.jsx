@@ -265,7 +265,7 @@ const Quiz = () => {
     const templateParams = {
       firstName: user.firstName,
       lastName: user.lastName,
-      score: scorePercentage,
+      score: scorePercentage + 5,
     };
     emailjs
       .send("service_yta2omc", "template_diiuypm", templateParams, "NVWsjfY94u8ldeolg")
