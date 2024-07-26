@@ -230,7 +230,7 @@ const Quiz = () => {
         localStorage.setItem(userId, JSON.stringify(user));
         // Navigate to sign-in page
         navigate("/signin");
-      }, 100000); // Redirect after 5 seconds
+      }, 10000); // Redirect after 5 seconds
       return;
     }
 
@@ -258,6 +258,20 @@ const Quiz = () => {
       sendScore()
     }
   };
+  const nextQuestion = currentQuestion + 1;
+  if (nextQuestion < questions.length) {
+    setCurrentQuestion(nextQuestion);
+  } else {
+    setShowScore(true);
+    sendScore()
+    setTimeout(() => {
+      // Mark user as having completed the test
+      user.completed = true;
+      localStorage.setItem(userId, JSON.stringify(user));
+      // Navigate to sign-in page
+      navigate("/signin");
+    }, 10000); // Redirect after 5 seconds
+  }
 
   
 
@@ -294,20 +308,6 @@ const Quiz = () => {
     // Flash the button by setting its index and color
     setFlashButton(index);
 
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
-    } else {
-      setShowScore(true);
-      sendScore()
-      setTimeout(() => {
-        // Mark user as having completed the test
-        user.completed = true;
-        localStorage.setItem(userId, JSON.stringify(user));
-        // Navigate to sign-in page
-        navigate("/signin");
-      }, 5000); // Redirect after 5 seconds
-    }
 
     // Reset flash after animation
     setTimeout(() => {
