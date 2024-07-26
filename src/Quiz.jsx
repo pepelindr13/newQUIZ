@@ -47,7 +47,7 @@ const questions = [
     type: "multiple",
     options: [
       "Pull, insert, inject, press",
-      "Pull the pin, Aim at the pass, squeeze the level, spread side by side",
+      "Pull the pin, Aim at the base, squeeze the level, spread side by side",
       "All of the above",
       "None of the above",
     ],
