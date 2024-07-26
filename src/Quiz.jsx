@@ -47,7 +47,7 @@ const questions = [
     type: "multiple",
     options: [
       "Pull, insert, inject, press",
-      "Pull the pin, Aim at the base, squeeze the level, spread side by side",
+      "Pull the pin, Aim at the base of fire, squeeze the level, spread side by side",
       "All of the above",
       "None of the above",
     ],
@@ -107,10 +107,9 @@ const questions = [
     type: "multiple",
     options: [
       "Fuel, oxygen and box",
-      "Fuel, oxygen & Heat",
+      "Fuel, oxygen & Magnet",
       "Table, Magnet & Matches",
       "Oxygen, Heat & Fuel",
-      "Fuel, oxygen & Heat",
     ],
     correctAnswers: ["Oxygen, Heat & Fuel"],
   },
@@ -243,8 +242,11 @@ const Quiz = () => {
   }, [time, navigate, userId, user]);
 
   const handleAnswerSubmit = () => {
+    if (questions[currentQuestion].type === "text" || questions[currentQuestion].correctAnswers.includes(userAnswer.trim().toLowerCase())) {
+      setScore(score + 5); // Increment score for correct answer or any input for text questions
+    }
     if (questions[currentQuestion].correctAnswers.includes(userAnswer.trim().toLowerCase())) {
-      setScore(score + 1); // 10 marks per question
+      setScore(score + 5); // 10 marks per question
     }
 
     const nextQuestion = currentQuestion + 1;
@@ -254,13 +256,6 @@ const Quiz = () => {
     } else {
       setShowScore(true);
       sendScore()
-      setTimeout(() => {
-        // Mark user as having completed the test
-        user.completed = true;
-        localStorage.setItem(userId, JSON.stringify(user));
-        // Navigate to sign-in page
-        navigate("/signin");
-      }, 100000); // Redirect after 5 seconds
     }
   };
 
