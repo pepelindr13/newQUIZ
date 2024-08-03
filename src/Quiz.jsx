@@ -246,7 +246,7 @@ const Quiz = () => {
       setScore(score + 5); // Increment score for correct answer or any input for text questions
     }
     if (questions[currentQuestion].correctAnswers.includes(userAnswer.trim().toLowerCase())) {
-      setScore(score + 5); // 10 marks per question
+      setScore(score + 5); // 5 marks per question
     }
 
     const nextQuestion = currentQuestion + 1;

@@ -6,7 +6,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const handleStartQuiz = () => {
-    navigate('/SignUp');
+    navigate('/loader');
   };
 
   return (

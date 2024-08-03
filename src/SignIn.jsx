@@ -53,7 +53,7 @@ const SignIn = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       {errors.password && <p className="error">{errors.password}</p>}
-      <button className='mb-3' onClick={handleSignIn}>Sign In</button>
+      <button className='mb-3 button' onClick={handleSignIn}>Sign In</button>
       <Link  style={{textDecoration:'none'}} to={'/signup'} className='text-center fw-bold mt-3 text-dark'>New user? <a href="/signup" className='text-decoration-none'>Sign Up</a></Link>
       
     </div>

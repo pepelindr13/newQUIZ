@@ -4,6 +4,7 @@ import Home from "./Home";
 import Quiz from "./Quiz";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import Loader from "./Loader";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/loader" element={<Loader />} />
       </Routes>
     </Router>
   );

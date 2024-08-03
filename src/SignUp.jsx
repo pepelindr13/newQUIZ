@@ -102,7 +102,7 @@ const SignUp = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       {errors.password && <p className="error">{errors.password}</p>}
-      <button onClick={handleSignUp}>Sign Up</button>
+      <button onClick={handleSignUp} className='button'>Sign Up</button>
     </div>
   );
 };
