@@ -17,7 +17,11 @@ const Home = () => {
         <div style={{fontSize:"3.0rem", fontWeight:"bolder"}}>BEELVEED</div>
         </span></h1>
       <p>Get ready to test your knowledge with our fire service quiz test.</p>
-      <button onClick={handleStartQuiz}>Start Quiz</button>
+      <div class="container">
+  <button className="button" onClick={handleStartQuiz}>START QUIZ</button>
+</div>
+
+
     </div>
   );
 };
